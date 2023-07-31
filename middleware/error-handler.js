@@ -10,5 +10,23 @@ module.exports = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  apiErrorHandler: async (err, req, res, next) => {
+    try {
+      if (err instanceof Error) {
+        return res.status(err.status || 500).json({
+          status: 'error',
+          message: `${err.name}: ${err.message}`
+        })
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          message: `${err}`
+        })
+      }
+    } catch (error) {
+      return next(error)
+    }
   }
 }
