@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../../models')
+const { Restaurant, User } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const adminServices = require('../../services/admin-services')
 
@@ -42,14 +42,7 @@ const adminController = {
 
   editRestaurant: async (req, res, next) => {
     try {
-      const [restaurant, categories] = await Promise.all([
-        Restaurant.findByPk(req.params.id, { raw: true }),
-        Category.findAll({ raw: true })
-      ])
-
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-
-      return res.render('admin/edit-restaurant', { restaurant, categories })
+      return adminServices.editRestaurant(req, (err, data) => err ? next(err) : res.render('admin/edit-restaurant', data))
     } catch (error) {
       return next(error)
     }

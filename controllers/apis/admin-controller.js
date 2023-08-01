@@ -33,6 +33,14 @@ const adminController = {
     }
   },
 
+  editRestaurant: async (req, res, next) => {
+    try {
+      return adminServices.editRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   deleteRestaurant: async (req, res, next) => {
     try {
       return adminServices.deleteRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))

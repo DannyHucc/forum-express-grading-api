@@ -43,6 +43,20 @@ const adminServices = {
     }
   },
 
+  editRestaurant: async (req, cb) => {
+    try {
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      return cb(null, { restaurant, categories })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
   postRestaurant: async (req, cb) => {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body
