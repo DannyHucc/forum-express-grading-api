@@ -9,6 +9,14 @@ const adminController = {
     }
   },
 
+  postRestaurant: async (req, res, next) => {
+    try {
+      return adminServices.postRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   deleteRestaurant: async (req, res, next) => {
     try {
       return adminServices.deleteRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))

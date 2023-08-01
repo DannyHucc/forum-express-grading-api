@@ -1,4 +1,5 @@
 const { Restaurant, Category } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
   getRestaurants: async (req, cb) => {
@@ -9,6 +10,30 @@ const adminServices = {
         include: [Category]
       })
       return cb(null, { restaurants })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  postRestaurant: async (req, cb) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } = req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const { file } = req
+      const [filePath] = await Promise.all([imgurFileHandler(file)])
+
+      const newRestaurant = await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null,
+        categoryId
+      })
+
+      return cb(null, { restaurant: newRestaurant })
     } catch (error) {
       return cb(error)
     }
