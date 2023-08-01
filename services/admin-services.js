@@ -15,6 +15,17 @@ const adminServices = {
     }
   },
 
+  createRestaurant: async (req, cb) => {
+    try {
+      const categories = await Category.findAll({
+        raw: true
+      })
+      return cb(null, { categories })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
   postRestaurant: async (req, cb) => {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body

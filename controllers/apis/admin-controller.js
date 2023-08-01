@@ -9,6 +9,14 @@ const adminController = {
     }
   },
 
+  createRestaurant: async (req, res, next) => {
+    try {
+      return adminServices.createRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   postRestaurant: async (req, res, next) => {
     try {
       return adminServices.postRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
