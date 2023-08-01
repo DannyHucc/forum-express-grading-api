@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 
@@ -42,7 +43,11 @@ const userController = {
 
   signIn: async (req, res, next) => {
     try {
+      const userData = req.user.toJSON()
+      delete userData.password
+      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
       req.flash('success_messages', '成功登入！')
+      req.session.jwtData = token
       return res.redirect('/restaurants')
     } catch (error) {
       return next(error)
