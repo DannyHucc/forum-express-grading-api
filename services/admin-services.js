@@ -26,6 +26,23 @@ const adminServices = {
     }
   },
 
+  getRestaurant: async (req, cb) => {
+    try {
+      const restaurant = await Restaurant.findByPk(
+        req.params.id,
+        {
+          raw: true,
+          nest: true,
+          include: [Category]
+        })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      return cb(null, { restaurant })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
   postRestaurant: async (req, cb) => {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body
