@@ -93,8 +93,7 @@ const adminController = {
 
   getUsers: async (req, res, next) => {
     try {
-      const users = await User.findAll({ raw: true, nest: true })
-      return res.render('admin/users', { users })
+      return adminServices.getUsers(req, (err, data) => err ? next(err) : res.render('admin/users', data))
     } catch (error) {
       return next(error)
     }

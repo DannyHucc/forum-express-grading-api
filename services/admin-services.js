@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
@@ -92,6 +92,15 @@ const adminServices = {
 
       const deletedRestaurant = await restaurant.destroy()
       return cb(null, { restaurant: deletedRestaurant })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  getUsers: async (req, cb) => {
+    try {
+      const users = await User.findAll({ raw: true, nest: true })
+      return cb(null, { users })
     } catch (error) {
       return cb(error)
     }
