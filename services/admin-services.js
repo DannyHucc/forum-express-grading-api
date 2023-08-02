@@ -81,6 +81,36 @@ const adminServices = {
     }
   },
 
+  putRestaurant: async (req, cb) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } = req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const { file } = req
+
+      const [restaurant, filePath] = await Promise.all([
+        Restaurant.findByPk(req.params.id),
+        imgurFileHandler(file)
+      ])
+
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      const newRestaurant = await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || restaurant.image,
+        categoryId
+      })
+
+      return cb(null, { newRestaurant })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
   deleteRestaurant: async (req, cb) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id)

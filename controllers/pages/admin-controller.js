@@ -1,5 +1,4 @@
-const { Restaurant, User } = require('../../models')
-const { imgurFileHandler } = require('../../helpers/file-helpers')
+const { User } = require('../../models')
 const adminServices = require('../../services/admin-services')
 
 const adminController = {
@@ -50,30 +49,12 @@ const adminController = {
 
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description, categoryId } = req.body
-      if (!name) throw new Error('Restaurant name is required!')
-
-      const { file } = req
-
-      const [restaurant, filePath] = await Promise.all([
-        Restaurant.findByPk(req.params.id),
-        imgurFileHandler(file)
-      ])
-
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-
-      await restaurant.update({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || restaurant.image,
-        categoryId
+      return adminServices.putRestaurant(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'restaurant was successfully to update')
+        req.session.putedData = data
+        res.redirect('/admin/restaurants')
       })
-
-      req.flash('success_messages', 'restaurant was successfully to update')
-      return res.redirect('/admin/restaurants')
     } catch (error) {
       return next(error)
     }
