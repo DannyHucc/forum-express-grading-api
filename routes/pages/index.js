@@ -10,7 +10,6 @@ const userController = require('../../controllers/pages/user-controller')
 const commentController = require('../../controllers/pages/comment-controller')
 
 const { authenticated, authenticatedAdmin } = require('../../middleware/auth')
-
 const { generalErrorHandler } = require('../../middleware/error-handler')
 const upload = require('../../middleware/multer')
 

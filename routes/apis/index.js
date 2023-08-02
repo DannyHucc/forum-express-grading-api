@@ -13,11 +13,13 @@ const { apiErrorHandler } = require('../../middleware/error-handler')
 
 router.use('/admin', authenticated, authenticatedAdmin, admin)
 
-router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/signup', userController.signUpPage)
 
 router.post('/signin', passport.authenticate('local', {
   session: false
 }), userController.signIn)
+
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', apiErrorHandler)
 

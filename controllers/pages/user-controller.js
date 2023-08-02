@@ -2,11 +2,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
+const userServices = require('../../services/user-services')
 
 const userController = {
   signUpPage: async (req, res, next) => {
     try {
-      return res.render('signup')
+      return userServices.signUpPage(req, (err, _data) => err ? next(err) : res.render('signup'))
     } catch (error) {
       return next(error)
     }
