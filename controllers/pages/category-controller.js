@@ -12,12 +12,11 @@ const categoryController = {
 
   postCategory: async (req, res, next) => {
     try {
-      const { name } = req.body
-
-      if (!name) throw new Error('Category name is required!')
-
-      await Category.create({ name })
-      return res.redirect('/admin/categories')
+      return categoryServices.postCategory(req, (err, data) => {
+        if (err) return next(err)
+        req.session.postedData = data
+        return res.redirect('/admin/categories')
+      })
     } catch (error) {
       return next(error)
     }

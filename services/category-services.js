@@ -12,6 +12,19 @@ const categoryServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  postCategory: async (req, cb) => {
+    try {
+      const { name } = req.body
+
+      if (!name) throw new Error('Category name is required!')
+
+      const category = await Category.create({ name })
+      return cb(null, category)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
