@@ -23,6 +23,14 @@ const categoryController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  deleteCategory: async (req, res, next) => {
+    try {
+      return categoryServices.deleteCategory(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

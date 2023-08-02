@@ -41,6 +41,20 @@ const categoryServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  deleteCategory: async (req, cb) => {
+    try {
+      const category = await Category.findByPk(req.params.id)
+
+      if (!category) throw new Error("Category didn't exist!")
+
+      const categoryData = await category.destroy()
+
+      return cb(null, categoryData)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
