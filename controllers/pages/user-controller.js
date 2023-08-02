@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
@@ -15,20 +14,12 @@ const userController = {
 
   signUp: async (req, res, next) => {
     try {
-      const { name, email, password, passwordCheck } = req.body
-      if (password !== passwordCheck) throw new Error('Passwords do not match!')
-
-      const user = await User.findOne({ where: { email } })
-      if (user) throw new Error('Email already exists!')
-
-      const hash = await bcrypt.hashSync(password, 10)
-      await User.create({
-        name: name,
-        email: email,
-        password: hash
+      return userServices.signUp(req, (err, data) => {
+        if (err) next(err)
+        req.flash('success_messages', 'register success!')
+        req.session.signUpData = data
+        return res.redirect('/signin')
       })
-      req.flash('success_messages', 'register success!')
-      return res.redirect('/signin')
     } catch (error) {
       return next(error)
     }

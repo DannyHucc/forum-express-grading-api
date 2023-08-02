@@ -10,6 +10,14 @@ const userController = {
     }
   },
 
+  signUp: async (req, res, next) => {
+    try {
+      return userServices.signUp(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   signIn: async (req, res, next) => {
     try {
       const userData = req.user.toJSON()
