@@ -134,6 +134,23 @@ const adminServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  patchUser: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist!")
+
+      if (user.email === 'root@example.com') {
+        return cb(null, false)
+      }
+
+      const newUser = await user.update({ isAdmin: !user.isAdmin })
+      return cb(null, { newUser })
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

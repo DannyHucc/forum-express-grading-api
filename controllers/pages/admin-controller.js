@@ -1,4 +1,3 @@
-const { User } = require('../../models')
 const adminServices = require('../../services/admin-services')
 
 const adminController = {
@@ -82,18 +81,20 @@ const adminController = {
 
   patchUser: async (req, res, next) => {
     try {
-      const { id } = req.params
+      adminServices.patchUser(req, (err, data) => {
+        if (err) return next(err)
 
-      const user = await User.findByPk(id)
-      if (!user) throw new Error("User didn't exist!")
-      if (user.email === 'root@example.com') {
-        req.flash('error_messages', '禁止變更 root 權限')
-        return res.redirect('back')
-      }
+        if (data.toString() === 'false') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
 
-      await user.update({ isAdmin: !user.isAdmin })
-      req.flash('success_messages', '使用者權限變更成功')
-      return res.redirect('/admin/users')
+        if (data) {
+          req.flash('success_messages', '使用者權限變更成功')
+          req.session.patchedData = data
+          return res.redirect('/admin/users')
+        }
+      })
     } catch (error) {
       return next(error)
     }
