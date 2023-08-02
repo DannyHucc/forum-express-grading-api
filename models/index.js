@@ -27,6 +27,15 @@ fs
     db[model.name] = model
   })
 
+// 確認 db 連線狀態
+sequelize.authenticate()
+  .then(() => {
+    console.log('connected to db')
+  })
+  .catch(err => {
+    console.log('Error' + err)
+  })
+
 // 設定 Models 之間的關聯
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
@@ -37,5 +46,12 @@ Object.keys(db).forEach(modelName => {
 // 匯出需要的物件
 db.sequelize = sequelize
 db.Sequelize = Sequelize
+
+// 使用 sync(...)方法
+db.sequelize.sync({ force: false })
+  .then(() => {
+    console.log('yes re-sync done!')
+  })
+  .catch(err => console.log("Can't syncronize", err))
 
 module.exports = db
