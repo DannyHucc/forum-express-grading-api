@@ -25,6 +25,22 @@ const categoryServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  putCategory: async (req, cb) => {
+    try {
+      const { name } = req.body
+
+      if (!name) throw new Error('Category name is required!')
+
+      const category = await Category.findByPk(req.params.id)
+
+      const categoryData = await category.update({ name })
+
+      return cb(null, categoryData)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

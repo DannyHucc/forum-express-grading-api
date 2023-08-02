@@ -24,14 +24,11 @@ const categoryController = {
 
   putCategory: async (req, res, next) => {
     try {
-      const { name } = req.body
-
-      if (!name) throw new Error('Category name is required!')
-
-      const category = await Category.findByPk(req.params.id)
-      await category.update({ name })
-
-      return res.redirect('/admin/categories')
+      return categoryServices.putCategory(req, (err, data) => {
+        if (err) return next(err)
+        req.session.putedData = data
+        return res.redirect('/admin/categories')
+      })
     } catch (error) {
       return next(error)
     }
