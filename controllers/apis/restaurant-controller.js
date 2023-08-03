@@ -7,6 +7,20 @@ const restaurantController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getRestaurant: async (req, res, next) => {
+    try {
+      return restaurantServices.getRestaurant(req, (err, data) => err
+        ? next(err)
+        : res.json({
+          restaurant: data.restaurant,
+          isFavorited: data.isFavorited,
+          isLiked: data.isLiked
+        }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

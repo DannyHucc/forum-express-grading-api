@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantServices = {
@@ -43,6 +43,37 @@ const restaurantServices = {
       })
     } catch (error) {
       return next(error)
+    }
+  },
+
+  getRestaurant: async (req, cb) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [
+          Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
+        ]
+      })
+
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      await restaurant.increment('viewCounts', {
+        where: { id: req.params.id },
+        by: 1
+      })
+
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
+
+      return cb(null, {
+        restaurant: restaurant.toJSON(),
+        isFavorited,
+        isLiked
+      })
+    } catch (error) {
+      return cb(error)
     }
   }
 }

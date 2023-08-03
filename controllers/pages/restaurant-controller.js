@@ -12,30 +12,13 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [
-          Category,
-          { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' },
-          { model: User, as: 'LikedUsers' }
-        ]
-      })
-
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-
-      await restaurant.increment('viewCounts', {
-        where: { id: req.params.id },
-        by: 1
-      })
-
-      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
-
-      return res.render('restaurant', {
-        restaurant: restaurant.toJSON(),
-        isFavorited,
-        isLiked
-      })
+      return restaurantServices.getRestaurant(req, (err, data) => err
+        ? next(err)
+        : res.render('restaurant', {
+          restaurant: data.restaurant,
+          isFavorited: data.isFavorited,
+          isLiked: data.isLiked
+        }))
     } catch (error) {
       return next(error)
     }
