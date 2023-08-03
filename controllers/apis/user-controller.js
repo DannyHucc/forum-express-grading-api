@@ -60,6 +60,17 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  editUser: async (req, res, next) => {
+    try {
+      return userServices.editUser(req, (err, data) => err
+        ? next(err)
+        : res.json({ status: 'success', data })
+      )
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

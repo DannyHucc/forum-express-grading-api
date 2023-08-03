@@ -70,13 +70,10 @@ const userController = {
 
   editUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, {
-        raw: true
-      })
-
-      if (!user) throw new Error("User doesn't exists!")
-
-      return res.render('users/edit', { user: user })
+      return userServices.editUser(req, (err, data) => err
+        ? next(err)
+        : res.render('users/edit', { user: data.user })
+      )
     } catch (error) {
       return next(error)
     }

@@ -89,6 +89,20 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  editUser: async (req, cb) => {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        raw: true
+      })
+
+      if (!user) throw new Error("User doesn't exists!")
+
+      return cb(null, { user })
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
