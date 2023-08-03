@@ -1,4 +1,4 @@
-const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
+const { User, Restaurant, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const userServices = require('../../services/user-services')
 
@@ -57,29 +57,12 @@ const userController = {
 
   getUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
-      const [user, comments] = await Promise.all([
-        User.findByPk(req.params.id, {
-          include: [
-            { model: User, as: 'Followers' },
-            { model: User, as: 'Followings' },
-            { model: Restaurant, as: 'FavoritedRestaurants' }
-          ],
-          nest: true
-        }),
-        Comment.findAll({
-          raw: true,
-          nest: true,
-          where: { userId },
-          include: Restaurant
-        })
-      ])
-
-      if (!user) throw new Error("User doesn't exists!")
-
-      const userData = user.toJSON()
-
-      return res.render('users/profile', { user: userData, comments })
+      return userServices.getUser(req, (err, data) => err
+        ? next(err)
+        : res.render('users/profile', {
+          user: data.userData,
+          comments: data.comments
+        }))
     } catch (error) {
       return next(error)
     }

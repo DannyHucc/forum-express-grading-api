@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 
 const userServices = {
   signUpPage: async (req, cb) => {
@@ -55,6 +55,37 @@ const userServices = {
     try {
       req.logout()
       return cb(null, null)
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  getUser: async (req, cb) => {
+    try {
+      const userId = req.params.id
+
+      const [user, comments] = await Promise.all([
+        User.findByPk(req.params.id, {
+          include: [
+            { model: User, as: 'Followers' },
+            { model: User, as: 'Followings' },
+            { model: Restaurant, as: 'FavoritedRestaurants' }
+          ],
+          nest: true
+        }),
+        Comment.findAll({
+          raw: true,
+          nest: true,
+          where: { userId },
+          include: Restaurant
+        })
+      ])
+
+      if (!user) throw new Error("User doesn't exists!")
+
+      const userData = user.toJSON()
+
+      return cb(null, { userData, comments })
     } catch (error) {
       return cb(error)
     }
