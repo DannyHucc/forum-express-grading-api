@@ -29,6 +29,14 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  signInPage: async (req, cb) => {
+    try {
+      return cb(null, null)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

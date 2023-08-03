@@ -27,7 +27,7 @@ const userController = {
 
   signInPage: async (req, res, next) => {
     try {
-      return res.render('signin')
+      return userServices.signInPage(req, (err, _data) => err ? next(err) : res.render('signin'))
     } catch (error) {
       return next(error)
     }
