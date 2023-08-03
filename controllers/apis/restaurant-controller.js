@@ -15,6 +15,14 @@ const restaurantController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getDashboard: async (req, res, next) => {
+    try {
+      return restaurantServices.getDashboard(req, (err, data) => err ? next(err) : res.json({ data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

@@ -75,6 +75,25 @@ const restaurantServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  getDashboard: async (req, cb) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id,
+        {
+          include: [
+            Category,
+            { model: Comment, include: User },
+            { model: User, as: 'FavoritedUsers' }
+          ]
+        })
+
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      return cb(null, { restaurant: restaurant.toJSON() })
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

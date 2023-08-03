@@ -26,16 +26,7 @@ const restaurantController = {
 
   getDashboard: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id,
-        {
-          include: Category,
-          raw: true,
-          nest: true
-        })
-
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-
-      return res.render('dashboard', { restaurant })
+      return restaurantServices.getDashboard(req, (err, data) => err ? next(err) : res.render('dashboard', { restaurant: data.restaurant }))
     } catch (error) {
       return next(error)
     }
