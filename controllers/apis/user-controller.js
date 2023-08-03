@@ -76,6 +76,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getTopUsers: async (req, res, next) => {
+    try {
+      return userServices.getTopUsers(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

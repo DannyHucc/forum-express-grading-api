@@ -126,6 +126,26 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  getTopUsers: async (req, cb) => {
+    try {
+      const users = await User.findAll({
+        include: [
+          { model: User, as: 'Followers' }]
+      })
+
+      const usersData = await users.map(user => ({
+        ...user.toJSON(),
+        followerCount: user.Followers.length,
+        isFollowed: req.user.Followings.some(f => f.id === user.id)
+      }))
+        .sort((a, b) => b.followerCount - a.followerCount)
+
+      return cb(null, usersData)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
