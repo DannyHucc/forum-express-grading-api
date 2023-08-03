@@ -55,9 +55,7 @@ const userController = {
         ? next(err)
         : res.json({
           status: 'success',
-          data,
-          user: data.userData,
-          comments: data.comments
+          data
         }))
     } catch (error) {
       return next(error)
