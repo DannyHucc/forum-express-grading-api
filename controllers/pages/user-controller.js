@@ -91,6 +91,14 @@ const userController = {
     }
   },
 
+  getTopUsers: async (req, res, next) => {
+    try {
+      return userServices.getTopUsers(req, (err, data) => err ? next(err) : res.render('top-users', { users: data }))
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   addFavorite: async (req, res, next) => {
     try {
       const userId = req.user.id
@@ -194,14 +202,6 @@ const userController = {
       req.flash('success_messages', 'You have successfully removed like from this restaurant')
 
       return res.redirect('back')
-    } catch (error) {
-      return next(error)
-    }
-  },
-
-  getTopUsers: async (req, res, next) => {
-    try {
-      return userServices.getTopUsers(req, (err, data) => err ? next(err) : res.render('top-users', { users: data }))
     } catch (error) {
       return next(error)
     }
