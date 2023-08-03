@@ -49,8 +49,7 @@ const userController = {
   logout: async (req, res, next) => {
     try {
       req.flash('success_messages', '登出成功！')
-      req.logout()
-      return res.redirect('/signin')
+      return userServices.logout(req, (err, data) => err ? next(err) : res.redirect('/signin'))
     } catch (error) {
       return next(error)
     }

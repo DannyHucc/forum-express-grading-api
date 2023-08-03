@@ -39,6 +39,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  logout: async (req, res, next) => {
+    try {
+      return userServices.logout(req, (err, _data) => err ? next(err) : res.json({ status: 'success' }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

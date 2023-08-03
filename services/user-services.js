@@ -49,6 +49,15 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  logout: async (req, cb) => {
+    try {
+      req.logout()
+      return cb(null, null)
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
