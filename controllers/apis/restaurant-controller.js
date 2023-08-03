@@ -11,13 +11,7 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
-      return restaurantServices.getRestaurant(req, (err, data) => err
-        ? next(err)
-        : res.json({
-          restaurant: data.restaurant,
-          isFavorited: data.isFavorited,
-          isLiked: data.isLiked
-        }))
+      return restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.json({ data }))
     } catch (error) {
       return next(error)
     }
