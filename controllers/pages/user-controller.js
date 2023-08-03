@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const userServices = require('../../services/user-services')
@@ -35,12 +34,13 @@ const userController = {
 
   signIn: async (req, res, next) => {
     try {
-      const userData = req.user.toJSON()
-      delete userData.password
-      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
-      req.flash('success_messages', '成功登入！')
-      req.session.jwtData = token
-      return res.redirect('/restaurants')
+      return userServices.signIn(req, (err, data) => {
+        if (err) next(err)
+        req.flash('success_messages', '成功登入！')
+        req.session.userData = data.userData
+        req.session.jwtData = data.token
+        return res.redirect('/restaurants')
+      })
     } catch (error) {
       return next(error)
     }

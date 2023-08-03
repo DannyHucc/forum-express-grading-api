@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -28,16 +27,15 @@ const userController = {
 
   signIn: async (req, res, next) => {
     try {
-      const userData = req.user.toJSON()
-      delete userData.password
-      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
-      return res.json({
-        status: 'success',
-        data: {
-          token,
-          user: userData
-        }
-      })
+      return userServices.signIn(req, (err, data) => err
+        ? next(err)
+        : res.json({
+          status: 'success',
+          data: {
+            token: data.token,
+            user: data.userData
+          }
+        }))
     } catch (error) {
       return next(error)
     }
