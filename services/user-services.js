@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userServices = {
   signUpPage: async (req, cb) => {
@@ -100,6 +101,28 @@ const userServices = {
       if (!user) throw new Error("User doesn't exists!")
 
       return cb(null, { user })
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  putUser: async (req, cb) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('User name is required!')
+
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.params.id),
+        imgurFileHandler(req.file)
+      ])
+      if (!user) throw new Error("User doesn't exists!")
+
+      const userData = await user.update({
+        name,
+        image: filePath || user.image
+      })
+
+      return cb(null, userData)
     } catch (error) {
       return cb(error)
     }

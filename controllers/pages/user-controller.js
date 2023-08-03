@@ -1,5 +1,4 @@
 const { User, Restaurant, Favorite, Like, Followship } = require('../../models')
-const { imgurFileHandler } = require('../../helpers/file-helpers')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -81,23 +80,12 @@ const userController = {
 
   putUser: async (req, res, next) => {
     try {
-      const { name } = req.body
-      if (!name) throw new Error('User name is required!')
-
-      const [user, filePath] = await Promise.all([
-        User.findByPk(req.params.id),
-        imgurFileHandler(req.file)
-      ])
-
-      if (!user) throw new Error("User doesn't exists!")
-
-      await user.update({
-        name,
-        image: filePath || user.image
-      })
-
       req.flash('success_messages', '使用者資料編輯成功')
-      return res.redirect(`/users/${req.params.id}`)
+      return userServices.putUser(req, (err, data) => {
+        if (err) return next(err)
+        req.session.putedData = data
+        return res.redirect(`/users/${req.params.id}`)
+      })
     } catch (error) {
       return next(error)
     }
