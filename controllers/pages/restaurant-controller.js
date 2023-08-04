@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../../models')
+const { Restaurant, User } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 
 const restaurantController = {
@@ -34,26 +34,7 @@ const restaurantController = {
 
   getFeeds: async (req, res, next) => {
     try {
-      const [restaurants, comments] = await Promise.all([
-        Restaurant.findAll({
-          limit: 10,
-          order: [['createdAt', 'DESC']],
-          include: [Category],
-          raw: true,
-          nest: true
-        }),
-        Comment.findAll({
-          limit: 10,
-          order: [['createdAt', 'DESC']],
-          include: [User, Restaurant],
-          raw: true,
-          nest: true
-        })
-      ])
-
-      if (!restaurants) throw new Error("Restaurant didn't exist!")
-
-      return res.render('feeds', { restaurants, comments })
+      return restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.render('feeds', { restaurants: data.restaurants, comments: data.comments }))
     } catch (error) {
       return next(error)
     }

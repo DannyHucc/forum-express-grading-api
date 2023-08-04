@@ -94,6 +94,33 @@ const restaurantServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  getFeeds: async (req, cb) => {
+    try {
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Category],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [User, Restaurant],
+          raw: true,
+          nest: true
+        })
+      ])
+
+      if (!restaurants) throw new Error("Restaurant didn't exist!")
+
+      return cb(null, { restaurants, comments })
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

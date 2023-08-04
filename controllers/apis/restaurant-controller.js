@@ -23,6 +23,14 @@ const restaurantController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getFeeds: async (req, res, next) => {
+    try {
+      return restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.json({ data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
