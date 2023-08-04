@@ -38,6 +38,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.post('/comments', authenticated, commentController.postComment)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+
 router.use('/', authenticated, restController.getRestaurants)
 
 router.use('/', apiErrorHandler)

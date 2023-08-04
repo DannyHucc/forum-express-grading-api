@@ -101,29 +101,12 @@ const userController = {
 
   addFavorite: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-
-      const [restaurant, favorite] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        Favorite.findOne({
-          where: {
-            userId,
-            restaurantId
-          }
-        })
-      ])
-
-      if (!restaurant) throw new Error("Restaurant doesn't exist")
-      if (favorite) throw new Error('You have favorited this restaurant!')
-
-      await Favorite.create({
-        userId,
-        restaurantId
+      return userServices.addFavorite(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'You have successfully added this restaurant to favorite')
+        req.session.addedData = data
+        res.redirect('back')
       })
-      req.flash('success_messages', 'You have successfully added this restaurant to favorite')
-
-      return res.redirect('back')
     } catch (error) {
       return next(error)
     }

@@ -84,6 +84,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  addFavorite: async (req, res, next) => {
+    try {
+      return userServices.addFavorite(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
