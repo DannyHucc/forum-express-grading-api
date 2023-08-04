@@ -1,4 +1,4 @@
-const { User, Restaurant, Like, Followship } = require('../../models')
+const { User, Followship } = require('../../models')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -140,23 +140,12 @@ const userController = {
 
   removeLike: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-
-      const [restaurant, like] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        Like.findOne({
-          where: { userId, restaurantId }
-        })
-      ])
-
-      if (!restaurant) throw new Error("Restaurant doesn't exist")
-      if (!like) throw new Error("You haven't liked this restaurant")
-
-      await like.destroy()
-      req.flash('success_messages', 'You have successfully removed like from this restaurant')
-
-      return res.redirect('back')
+      return userServices.removeLike(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'You have successfully removed like from this restaurant')
+        req.session.removedData = data
+        return res.redirect('back')
+      })
     } catch (error) {
       return next(error)
     }

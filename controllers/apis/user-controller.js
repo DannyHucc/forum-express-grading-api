@@ -108,6 +108,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  removeLike: async (req, res, next) => {
+    try {
+      return userServices.removeLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

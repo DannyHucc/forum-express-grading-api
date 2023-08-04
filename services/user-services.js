@@ -227,6 +227,29 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  removeLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: { userId, restaurantId }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (!like) throw new Error("You haven't liked this restaurant")
+
+      const likeData = await like.destroy()
+
+      return cb(null, likeData.toJSON())
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
