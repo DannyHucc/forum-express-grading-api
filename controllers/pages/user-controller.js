@@ -1,4 +1,3 @@
-const { User, Followship } = require('../../models')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -166,25 +165,12 @@ const userController = {
 
   removeFollowing: async (req, res, next) => {
     try {
-      const { userId } = req.params
-
-      const [user, followship] = await Promise.all([
-        User.findByPk(userId),
-        Followship.findOne({
-          where: {
-            followerId: req.user.id,
-            followingId: req.params.userId
-          }
-        })
-      ])
-
-      if (!user) throw new Error("User doesn't exist")
-      if (!followship) throw new Error("You haven't followed this user!")
-
-      await followship.destroy()
-      req.flash('success_messages', 'You have successfully removed user from this followship')
-
-      return res.redirect('back')
+      return userServices.removeFollowing(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'You have successfully removed user from this followship')
+        req.session.addedData = data
+        return res.redirect('back')
+      })
     } catch (error) {
       return next(error)
     }

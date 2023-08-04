@@ -278,6 +278,31 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  removeFollowing: async (req, cb) => {
+    try {
+      const { userId } = req.params
+
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error("User doesn't exist")
+      if (!followship) throw new Error("You haven't followed this user!")
+
+      const followshipData = await followship.destroy()
+
+      return cb(null, followshipData.toJSON())
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 

@@ -124,6 +124,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  removeFollowing: async (req, res, next) => {
+    try {
+      return userServices.removeFollowing(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
