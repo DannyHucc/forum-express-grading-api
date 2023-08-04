@@ -1,4 +1,4 @@
-const { User, Restaurant, Favorite, Like, Followship } = require('../../models')
+const { User, Restaurant, Like, Followship } = require('../../models')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -105,7 +105,7 @@ const userController = {
         if (err) return next(err)
         req.flash('success_messages', 'You have successfully added this restaurant to favorite')
         req.session.addedData = data
-        res.redirect('back')
+        return res.redirect('back')
       })
     } catch (error) {
       return next(error)
@@ -114,23 +114,12 @@ const userController = {
 
   removeFavorite: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-
-      const [restaurant, favorite] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        Favorite.findOne({
-          where: { userId, restaurantId }
-        })
-      ])
-
-      if (!restaurant) throw new Error("Restaurant doesn't exist")
-      if (!favorite) throw new Error("You have'n favorited this restaurant")
-
-      await favorite.destroy()
-      req.flash('success_messages', 'You have successfully removed favorite from this restaurant')
-
-      return res.redirect('back')
+      return userServices.removeFavorite(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'You have successfully removed favorite from this restaurant')
+        req.session.removedData = data
+        return res.redirect('back')
+      })
     } catch (error) {
       return next(error)
     }

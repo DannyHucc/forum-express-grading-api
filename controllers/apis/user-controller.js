@@ -92,6 +92,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  removeFavorite: async (req, res, next) => {
+    try {
+      return userServices.removeFavorite(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

@@ -175,6 +175,29 @@ const userServices = {
     } catch (error) {
       return cb(error)
     }
+  },
+
+  removeFavorite: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({
+          where: { userId, restaurantId }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (!favorite) throw new Error("You have'n favorited this restaurant")
+
+      const favoriteData = await favorite.destroy()
+
+      return cb(null, favoriteData.toJSON())
+    } catch (error) {
+      return cb(error)
+    }
   }
 }
 
