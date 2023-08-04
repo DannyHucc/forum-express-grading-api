@@ -35,6 +35,8 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+router.use('/', authenticated, restController.getRestaurants)
+
 router.use('/', apiErrorHandler)
 
 module.exports = router
