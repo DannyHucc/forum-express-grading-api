@@ -1,4 +1,3 @@
-const { Restaurant, User } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 
 const restaurantController = {
@@ -42,22 +41,7 @@ const restaurantController = {
 
   getTopRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({
-        include: [
-          { model: User, as: 'FavoritedUsers' }]
-      })
-      if (!restaurants) throw new Error("Restaurant didn't exist!")
-
-      const restaurantsData = await restaurants.map(r => ({
-        ...r.toJSON(),
-        description: r.description.substring(0, 50),
-        favoritedCount: r.FavoritedUsers.length,
-        isFavorited: r.FavoritedUsers.some(f => f.id === req.user.id)
-      }))
-        .sort((a, b) => b.favoritedCount - a.favoritedCount)
-        .slice(0, 10)
-
-      return res.render('top-restaurants', { restaurants: restaurantsData })
+      return restaurantServices.getTopRestaurants(req, (err, data) => err ? next(err) : res.render('top-restaurants', { restaurants: data.restaurantsData }))
     } catch (error) {
       return next(error)
     }
