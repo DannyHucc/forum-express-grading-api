@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userServices = {
@@ -247,6 +247,34 @@ const userServices = {
       const likeData = await like.destroy()
 
       return cb(null, likeData.toJSON())
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  addFollowing: async (req, cb) => {
+    try {
+      const { userId } = req.params
+
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error("User doesn't exist")
+      if (followship) throw new Error('You are already following this user!')
+
+      const follwshoipData = await Followship.create({
+        followerId: req.user.id,
+        followingId: userId
+      })
+
+      return cb(null, follwshoipData)
     } catch (error) {
       return cb(error)
     }

@@ -153,28 +153,12 @@ const userController = {
 
   addFollowing: async (req, res, next) => {
     try {
-      const { userId } = req.params
-
-      const [user, followship] = await Promise.all([
-        User.findByPk(userId),
-        Followship.findOne({
-          where: {
-            followerId: req.user.id,
-            followingId: req.params.userId
-          }
-        })
-      ])
-
-      if (!user) throw new Error("User doesn't exist")
-      if (followship) throw new Error('You are already following this user!')
-
-      await Followship.create({
-        followerId: req.user.id,
-        followingId: userId
+      return userServices.addFollowing(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'You have successfully followed this user to followship')
+        req.session.addedData = data
+        return res.redirect('back')
       })
-      req.flash('success_messages', 'You have successfully followed this user to followship')
-
-      return res.redirect('back')
     } catch (error) {
       return next(error)
     }
