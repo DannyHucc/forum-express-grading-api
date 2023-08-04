@@ -100,6 +100,14 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  addLike: async (req, res, next) => {
+    try {
+      return userServices.addLike(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

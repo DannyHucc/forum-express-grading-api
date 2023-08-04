@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userServices = {
@@ -195,6 +195,35 @@ const userServices = {
       const favoriteData = await favorite.destroy()
 
       return cb(null, favoriteData.toJSON())
+    } catch (error) {
+      return cb(error)
+    }
+  },
+
+  addLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            userId,
+            restaurantId
+          }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (like) throw new Error('You have liked this restaurant!')
+
+      const likeData = await Like.create({
+        userId,
+        restaurantId
+      })
+
+      return cb(null, likeData)
     } catch (error) {
       return cb(error)
     }
