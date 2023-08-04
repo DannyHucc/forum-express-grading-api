@@ -7,6 +7,14 @@ const commentController = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  deleteComment: async (req, res, next) => {
+    try {
+      return commentServices.deleteComment(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

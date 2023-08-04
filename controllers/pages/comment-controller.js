@@ -1,4 +1,3 @@
-const { Comment } = require('../../models')
 const commentServices = require('../../services/comment-services')
 
 const commentController = {
@@ -16,13 +15,11 @@ const commentController = {
 
   deleteComment: async (req, res, next) => {
     try {
-      const comment = await Comment.findByPk(req.params.id)
-
-      if (!comment) throw new Error("Comment didn't exist!'")
-
-      const deletedComment = await comment.destroy()
-
-      return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+      return commentServices.deleteComment(req, (err, data) => {
+        if (err) return next(err)
+        req.session.deletedData = data
+        return res.redirect(`/restaurants/${data.restaurantId}`)
+      })
     } catch (error) {
       return next(error)
     }
