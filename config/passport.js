@@ -17,14 +17,14 @@ passport.use(new LocalStrategy(
   },
 
   // authenticate user
-  (req, email, password, cb) => {
+  (req, email, password, done) => {
     User.findOne({ where: { email } })
       .then(user => {
-        if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+        if (!user) return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         bcrypt.compare(password, user.password)
           .then(res => {
-            if (!res) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
-            return cb(null, user)
+            if (!res) return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+            return done(null, user)
           })
       })
   }
@@ -36,7 +36,7 @@ const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET
 }
 // set up JWT Passport strategy
-passport.use(new JWTStrategy(jwtOptions, (jwtPayload, cb) => {
+passport.use(new JWTStrategy(jwtOptions, (jwtPayload, done) => {
   User.findByPk(jwtPayload.id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
@@ -46,16 +46,16 @@ passport.use(new JWTStrategy(jwtOptions, (jwtPayload, cb) => {
     ]
   })
     .then(user => {
-      return cb(null, user)
+      return done(null, user)
     })
-    .catch(error => cb(error))
+    .catch(error => done(error))
 }))
 
 // serialize and deserialize user
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+passport.serializeUser((user, done) => {
+  done(null, user.id)
 })
-passport.deserializeUser((id, cb) => {
+passport.deserializeUser((id, done) => {
   User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
@@ -65,9 +65,9 @@ passport.deserializeUser((id, cb) => {
     ]
   })
     .then(user => {
-      return cb(null, user.toJSON())
+      return done(null, user.toJSON())
     })
-    .catch(error => cb(error))
+    .catch(error => done(error))
 })
 
 module.exports = passport
