@@ -61,6 +61,7 @@ const adminServices = {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
+      if (!categoryId) throw new Error('Category is required!')
 
       const { file } = req
       const [filePath] = await Promise.all([imgurFileHandler(file)])
@@ -85,6 +86,7 @@ const adminServices = {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
+      if (!categoryId) throw new Error('Category is required!')
 
       const { file } = req
 
