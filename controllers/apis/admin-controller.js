@@ -72,15 +72,15 @@ const adminController = {
 
         if (data.toString() === 'false') {
           return res.json({
-            status: 'success',
-            error_messages: '禁止變更 root 權限'
+            status: 'error',
+            messages: '禁止變更 root 權限'
           })
         }
 
         if (data) {
           return res.json({
             status: 'success',
-            success_messages: '使用者權限變更成功'
+            messages: '使用者權限變更成功'
           })
         }
       })
