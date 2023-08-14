@@ -7,11 +7,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "password",
-    "database": "forum",
-    "host": "my-flyio-mysql.internal",
-    "dialect": "mysql"
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
     "username": "travis",
